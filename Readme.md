@@ -7,11 +7,15 @@
 * aws dynamodb
 * docker
 
-
-## commands
+## steps
+1. run dynamodb in docker with following command and can check this repo for this part [dynamodb with docker](https://github.com/justin6302971/docker_dynamodb_local)
 ``` bash
- 
+# clone this repo and navigate to the directory
+docker-compose up -d
 ```
+2. download gui tool(nosql workbench) or using aws cli to check if it is running
+3. create table with sample model, this sample using employee model for demostration
+
 
 ## references
 1. [running aws dynamodb locally for .net core app](https://www.stevejgordon.co.uk/running-aws-dynamodb-locally-for-net-core-developers)
