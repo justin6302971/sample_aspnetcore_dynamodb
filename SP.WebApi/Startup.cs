@@ -1,3 +1,4 @@
+using System.Reflection;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using AutoMapper;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using SP.WebApi.Domain.MappingProfiles;
 using SP.WebApi.Extensions;
 
@@ -54,6 +56,17 @@ namespace SP.WebApi
             });
             services.AddSingleton<IMapper>(s => config.CreateMapper());
 
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "dynamodb sample Service", Version = "v1" });
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             services.AddCustomServices(_configuration);
 
@@ -67,6 +80,11 @@ namespace SP.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint(_configuration.GetValue<string>("VirtualDirectory") + "/swagger/v1/swagger.json", "dynamodb sample Service API");
+            });
 
             app.UseHttpsRedirection();
 
